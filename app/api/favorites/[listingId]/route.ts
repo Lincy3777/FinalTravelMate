@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 import getCurrentUser from "@/app/actions/getCurrentUser";
 import prisma from "@/app/libs/prismadb";
 
@@ -26,7 +26,7 @@ export async function POST(
       data: { favoriteIds },
     });
 
-    return NextResponse.json(user);
+    return NextResponse.json(user, { status: 200 });
   } catch (error) {
     console.error("POST /api/favorites/[listingId] Error:", error);
     return NextResponse.json(
@@ -62,7 +62,7 @@ export async function DELETE(
       data: { favoriteIds },
     });
 
-    return NextResponse.json(user);
+    return NextResponse.json(user, { status: 200 });
   } catch (error) {
     console.error("DELETE /api/favorites/[listingId] Error:", error);
     return NextResponse.json(
