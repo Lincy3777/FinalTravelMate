@@ -4,7 +4,7 @@ import prisma from "@/app/libs/prismadb";
 
 export async function POST(
   request: NextRequest,
-  { params }: { params: { listingId: string } }
+  context: { params: { listingId: string } }
 ) {
   try {
     const currentUser = await getCurrentUser();
@@ -13,22 +13,17 @@ export async function POST(
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const { listingId } = params;
+    const { listingId } = context.params;
 
     if (!listingId || typeof listingId !== "string") {
       return NextResponse.json({ error: "Invalid ID" }, { status: 400 });
     }
 
-    const favoriteIds = [...(currentUser.favoriteIds || [])];
-    favoriteIds.push(listingId);
+    const favoriteIds = [...(currentUser.favoriteIds || []), listingId];
 
     const user = await prisma.user.update({
-      where: {
-        id: currentUser.id,
-      },
-      data: {
-        favoriteIds,
-      },
+      where: { id: currentUser.id },
+      data: { favoriteIds },
     });
 
     return NextResponse.json(user);
@@ -40,7 +35,7 @@ export async function POST(
 
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { listingId: string } }
+  context: { params: { listingId: string } }
 ) {
   try {
     const currentUser = await getCurrentUser();
@@ -49,23 +44,19 @@ export async function DELETE(
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const { listingId } = params;
+    const { listingId } = context.params;
 
     if (!listingId || typeof listingId !== "string") {
       return NextResponse.json({ error: "Invalid ID" }, { status: 400 });
     }
 
-    const favoriteIds = [...(currentUser.favoriteIds || [])].filter(
+    const favoriteIds = (currentUser.favoriteIds || []).filter(
       (id) => id !== listingId
     );
 
     const user = await prisma.user.update({
-      where: {
-        id: currentUser.id,
-      },
-      data: {
-        favoriteIds,
-      },
+      where: { id: currentUser.id },
+      data: { favoriteIds },
     });
 
     return NextResponse.json(user);
