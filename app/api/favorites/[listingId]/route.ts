@@ -3,7 +3,7 @@ import getCurrentUser from "@/app/actions/getCurrentUser";
 import prisma from "@/app/libs/prismadb";
 
 export async function POST(
-  request: NextRequest,
+  request: Request,
   { params }: { params: { listingId: string } }
 ) {
   try {
@@ -37,7 +37,7 @@ export async function POST(
 }
 
 export async function DELETE(
-  request: NextRequest,
+  request: Request,
   { params }: { params: { listingId: string } }
 ) {
   try {
@@ -54,7 +54,7 @@ export async function DELETE(
     }
 
     const favoriteIds = (currentUser.favoriteIds || []).filter(
-      (id) => id !== listingId
+      (id: string) => id !== listingId
     );
 
     const user = await prisma.user.update({
