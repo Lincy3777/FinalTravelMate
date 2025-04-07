@@ -2,25 +2,27 @@ import getCurrentUser from "@/app/actions/getCurrentUser";
 import prisma from "@/app/libs/prismadb";
 import { NextResponse } from "next/server";
 
-interface IParams{
+interface IParams {
   listingId?: string;
 }
 
-export async function POST(request: Request, { params }: { params: IParams }) {
+export async function POST(
+  request: Request,
+  context: { params: IParams }
+) {
   const currentUser = await getCurrentUser();
 
   if (!currentUser) {
-    return NextResponse.error();
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const { listingId } = await params;
+  const { listingId } = context.params;
 
   if (!listingId || typeof listingId !== "string") {
-    throw new Error("Invalid Id");
+    return NextResponse.json({ error: "Invalid ID" }, { status: 400 });
   }
 
   const favoriteIds = [...(currentUser.favoriteIds || [])];
-
   favoriteIds.push(listingId);
 
   const user = await prisma.user.update({
@@ -35,25 +37,23 @@ export async function POST(request: Request, { params }: { params: IParams }) {
   return NextResponse.json(user);
 }
 
-// { params }: { params: IParams }
 export async function DELETE(
   request: Request,
-  { params }: { params: IParams }
+  context: { params: IParams }
 ) {
   const currentUser = await getCurrentUser();
 
   if (!currentUser) {
-    return NextResponse.error();
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const { listingId } = await params;
+  const { listingId } = context.params;
 
   if (!listingId || typeof listingId !== "string") {
-    throw new Error("Invalid Id");
+    return NextResponse.json({ error: "Invalid ID" }, { status: 400 });
   }
 
   let favoriteIds = [...(currentUser.favoriteIds || [])];
-
   favoriteIds = favoriteIds.filter((id) => id !== listingId);
 
   const user = await prisma.user.update({
@@ -67,4 +67,3 @@ export async function DELETE(
 
   return NextResponse.json(user);
 }
-
