@@ -22,9 +22,9 @@ export default async function getListings(params: IListingsParams) {
       startDate,
       endDate,
       category,
-    } = await params;
+    } = params; // No need for `await` here
 
-    let query: any = {};
+    const query: Record<string, any> = {}; // Replace 'any' if desired with a custom type
 
     if (userId) {
       query.userId = userId;
@@ -36,14 +36,12 @@ export default async function getListings(params: IListingsParams) {
 
     if (roomCount) {
       query.roomCount = {
-         // filtering out the listings with roomCount less than the roomCount provided
-        gte: +roomCount, //+ helps in converting the inital string var to definite number
+        gte: +roomCount,
       };
     }
 
     if (guestCount) {
       query.guestCount = {
-        // filtering out the listings with guestCount less than the guestCount provided
         gte: +guestCount,
       };
     }
@@ -77,20 +75,24 @@ export default async function getListings(params: IListingsParams) {
       };
     }
 
-    const listing = await prisma.listing.findMany({
+    const listings = await prisma.listing.findMany({
       where: query,
       orderBy: {
         createdAt: "desc",
       },
     });
 
-    const safeListings = listing.map((list) => ({
+    const safeListings = listings.map((list) => ({
       ...list,
       createdAt: list.createdAt.toISOString(),
     }));
 
     return safeListings;
-  } catch (error: any) {
-    throw new Error(error.message);
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      throw new Error(error.message);
+    } else {
+      throw new Error("An unknown error occurred while fetching listings.");
+    }
   }
 }

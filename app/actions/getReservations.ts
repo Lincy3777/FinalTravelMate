@@ -8,21 +8,21 @@ interface IParams {
 
 export default async function getReservation(params: IParams) {
   try {
-    const { listingId, userId, authorId } = await params;
+    const { listingId, userId, authorId } = params; // Removed `await`, not needed here
 
-    const query: any = {};
+    const query: Record<string, unknown> = {}; // Safer than `any`
 
     if (listingId) {
       query.listingId = listingId;
-    } //we can find all the reservations made a particular listing
+    }
 
     if (userId) {
       query.userId = userId;
-    } //we can find all the reservations made by a particular user
+    }
 
     if (authorId) {
       query.listing = { userId: authorId };
-    } //we can find all the reservations made by a other user for author's listing
+    }
 
     const reservation = await prisma.reservation.findMany({
       where: query,
@@ -46,7 +46,11 @@ export default async function getReservation(params: IParams) {
     }));
 
     return safeReservations;
-  } catch (error: any) {
-    throw new Error(error.message);
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      throw new Error(error.message);
+    } else {
+      throw new Error("An unknown error occurred while fetching reservations.");
+    }
   }
 }

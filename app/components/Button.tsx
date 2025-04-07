@@ -91,7 +91,6 @@
 
 // export default Button;
 
-
 "use client";
 
 import { IconType } from "react-icons";
@@ -101,12 +100,11 @@ interface ButtonProps {
   onClick?: (e: React.MouseEvent<HTMLButtonElement>) => void;
   disabled?: boolean;
   outline?: boolean;
-  small?: boolean;
   icon?: IconType;
   type?: "button" | "submit" | "reset";
   className?: string;
-  size?: "small" | "medium" | "large"; // Added size prop
-  shape?: "rounded" | "square" | "circle"; // Added shape prop
+  size?: "small" | "medium" | "large";
+  shape?: "rounded" | "square" | "circle";
 }
 
 const Button: React.FC<ButtonProps> = ({
@@ -114,12 +112,11 @@ const Button: React.FC<ButtonProps> = ({
   onClick,
   disabled,
   outline,
-  small,
   icon: Icon,
   type = "button",
   className = "",
   size = "medium",
-  shape = "rounded", 
+  shape = "rounded",
 }) => {
   let sizeClasses = "";
   switch (size) {
