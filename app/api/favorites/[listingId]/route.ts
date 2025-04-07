@@ -9,7 +9,7 @@ interface IParams {
 
 export async function POST(
   request: Request,
-  context: { params: IParams }
+  { params }: { params: IParams }
 ) {
   try {
     // Get the current user
@@ -20,7 +20,7 @@ export async function POST(
     }
 
     // Extract listingId from params
-    const { listingId } = context.params;
+    const { listingId } = params;
 
     if (!listingId || typeof listingId !== "string") {
       return NextResponse.json({ error: "Invalid ID" }, { status: 400 });
@@ -49,7 +49,7 @@ export async function POST(
 
 export async function DELETE(
   request: Request,
-  context: { params: IParams }
+  { params }: { params: IParams }
 ) {
   try {
     // Get the current user
@@ -60,7 +60,7 @@ export async function DELETE(
     }
 
     // Extract listingId from params
-    const { listingId } = context.params;
+    const { listingId } = params;
 
     if (!listingId || typeof listingId !== "string") {
       return NextResponse.json({ error: "Invalid ID" }, { status: 400 });
