@@ -2,10 +2,11 @@ import { NextResponse } from "next/server";
 import getCurrentUser from "@/app/actions/getCurrentUser";
 import prisma from "@/app/libs/prismadb";
 
-export async function POST(
-  request: Request,
-  { params }: { params: { listingId: string } }
-) {
+interface Context {
+  params: { listingId: string };
+}
+
+export async function POST(request: Request, context: Context) {
   try {
     const currentUser = await getCurrentUser();
 
@@ -13,7 +14,7 @@ export async function POST(
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const { listingId } = params;
+    const { listingId } = context.params;
 
     if (!listingId || typeof listingId !== "string") {
       return NextResponse.json({ error: "Invalid ID" }, { status: 400 });
@@ -28,7 +29,7 @@ export async function POST(
 
     return NextResponse.json(user, { status: 200 });
   } catch (error) {
-    console.error("POST /api/favorites/[listingId] Error:", error);
+    console.error("POST Error:", error);
     return NextResponse.json(
       { error: "Internal Server Error" },
       { status: 500 }
@@ -36,10 +37,7 @@ export async function POST(
   }
 }
 
-export async function DELETE(
-  request: Request,
-  { params }: { params: { listingId: string } }
-) {
+export async function DELETE(request: Request, context: Context) {
   try {
     const currentUser = await getCurrentUser();
 
@@ -47,7 +45,7 @@ export async function DELETE(
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const { listingId } = params;
+    const { listingId } = context.params;
 
     if (!listingId || typeof listingId !== "string") {
       return NextResponse.json({ error: "Invalid ID" }, { status: 400 });
@@ -64,7 +62,7 @@ export async function DELETE(
 
     return NextResponse.json(user, { status: 200 });
   } catch (error) {
-    console.error("DELETE /api/favorites/[listingId] Error:", error);
+    console.error("DELETE Error:", error);
     return NextResponse.json(
       { error: "Internal Server Error" },
       { status: 500 }
