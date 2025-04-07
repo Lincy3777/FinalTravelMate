@@ -1,10 +1,11 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse, NextRequest } from "next/server"; // Import NextRequest
 import getCurrentUser from "@/app/actions/getCurrentUser";
 import prisma from "@/app/libs/prismadb";
 
+// No need for the custom RequestContext interface anymore
+
 export async function POST(
-  request: NextRequest,
-  { params }: { params: { listingId: string } }
+  request: NextRequest // Use NextRequest type for the request
 ): Promise<NextResponse> {
   try {
     const currentUser = await getCurrentUser();
@@ -13,7 +14,7 @@ export async function POST(
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const { listingId } = params;
+    const listingId = request.nextUrl.pathname.split('/').pop(); // Extract listingId from the URL
 
     if (!listingId || typeof listingId !== "string") {
       return NextResponse.json({ error: "Invalid ID" }, { status: 400 });
@@ -28,7 +29,7 @@ export async function POST(
 
     return NextResponse.json(user, { status: 200 });
   } catch (error) {
-    console.error("POST Error:", error);
+    console.error("POST /api/favorites/[listingId] Error:", error);
     return NextResponse.json(
       { error: "Internal Server Error" },
       { status: 500 }
@@ -37,8 +38,7 @@ export async function POST(
 }
 
 export async function DELETE(
-  request: NextRequest,
-  { params }: { params: { listingId: string } }
+  request: NextRequest // Use NextRequest type for the request
 ): Promise<NextResponse> {
   try {
     const currentUser = await getCurrentUser();
@@ -47,7 +47,7 @@ export async function DELETE(
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const { listingId } = params;
+    const listingId = request.nextUrl.pathname.split('/').pop(); // Extract listingId from the URL
 
     if (!listingId || typeof listingId !== "string") {
       return NextResponse.json({ error: "Invalid ID" }, { status: 400 });
@@ -64,7 +64,7 @@ export async function DELETE(
 
     return NextResponse.json(user, { status: 200 });
   } catch (error) {
-    console.error("DELETE Error:", error);
+    console.error("DELETE /api/favorites/[listingId] Error:", error);
     return NextResponse.json(
       { error: "Internal Server Error" },
       { status: 500 }
