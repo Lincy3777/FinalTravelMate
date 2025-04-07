@@ -2,43 +2,14 @@ import { NextResponse, NextRequest } from "next/server"; // Import NextRequest
 import getCurrentUser from "@/app/actions/getCurrentUser";
 import prisma from "@/app/libs/prismadb";
 
-// No need for the custom RequestContext interface anymore
-
-export async function POST(
-  request: NextRequest // Use NextRequest type for the request
-): Promise<NextResponse> {
-  try {
-    const currentUser = await getCurrentUser();
-
-    if (!currentUser) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
-
-    const listingId = request.nextUrl.pathname.split('/').pop(); // Extract listingId from the URL
-
-    if (!listingId || typeof listingId !== "string") {
-      return NextResponse.json({ error: "Invalid ID" }, { status: 400 });
-    }
-
-    const favoriteIds = [...(currentUser.favoriteIds || []), listingId];
-
-    const user = await prisma.user.update({
-      where: { id: currentUser.id },
-      data: { favoriteIds },
-    });
-
-    return NextResponse.json(user, { status: 200 });
-  } catch (error) {
-    console.error("POST /api/favorites/[listingId] Error:", error);
-    return NextResponse.json(
-      { error: "Internal Server Error" },
-      { status: 500 }
-    );
-  }
+// Define your IParams interface (if you haven't already)
+interface IParams {
+  listingId?: string;
 }
 
 export async function DELETE(
-  request: NextRequest // Use NextRequest type for the request
+  request: NextRequest, // Use NextRequest for the request object
+  { params }: { params: IParams } // Destructure params from the second argument
 ): Promise<NextResponse> {
   try {
     const currentUser = await getCurrentUser();
@@ -47,24 +18,22 @@ export async function DELETE(
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const listingId = request.nextUrl.pathname.split('/').pop(); // Extract listingId from the URL
+    const { listingId } = params; // Access listingId from the destructured params
 
     if (!listingId || typeof listingId !== "string") {
       return NextResponse.json({ error: "Invalid ID" }, { status: 400 });
     }
 
-    const favoriteIds = (currentUser.favoriteIds || []).filter(
-      (id: string) => id !== listingId
-    );
-
-    const user = await prisma.user.update({
-      where: { id: currentUser.id },
-      data: { favoriteIds },
+    const listing = await prisma.listing.delete({
+      where: {
+        id: listingId,
+        userId: currentUser.id,
+      },
     });
 
-    return NextResponse.json(user, { status: 200 });
+    return NextResponse.json(listing, { status: 200 });
   } catch (error) {
-    console.error("DELETE /api/favorites/[listingId] Error:", error);
+    console.error("DELETE /api/listings/[listingId] Error:", error);
     return NextResponse.json(
       { error: "Internal Server Error" },
       { status: 500 }
