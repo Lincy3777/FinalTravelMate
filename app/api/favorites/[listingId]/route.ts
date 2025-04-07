@@ -1,36 +1,27 @@
+import { NextRequest, NextResponse } from "next/server";
 import getCurrentUser from "@/app/actions/getCurrentUser";
 import prisma from "@/app/libs/prismadb";
-import { NextResponse } from "next/server";
-
-// Define the interface for params
-interface IParams {
-  listingId?: string;
-}
 
 export async function POST(
-  request: Request,
-  { params }: { params: IParams }
+  request: NextRequest,
+  { params }: { params: { listingId: string } }
 ) {
   try {
-    // Get the current user
     const currentUser = await getCurrentUser();
 
     if (!currentUser) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    // Extract listingId from params
     const { listingId } = params;
 
     if (!listingId || typeof listingId !== "string") {
       return NextResponse.json({ error: "Invalid ID" }, { status: 400 });
     }
 
-    // Add listingId to favoriteIds
     const favoriteIds = [...(currentUser.favoriteIds || [])];
     favoriteIds.push(listingId);
 
-    // Update the user in the database
     const user = await prisma.user.update({
       where: {
         id: currentUser.id,
@@ -48,29 +39,26 @@ export async function POST(
 }
 
 export async function DELETE(
-  request: Request,
-  { params }: { params: IParams }
+  request: NextRequest,
+  { params }: { params: { listingId: string } }
 ) {
   try {
-    // Get the current user
     const currentUser = await getCurrentUser();
 
     if (!currentUser) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    // Extract listingId from params
     const { listingId } = params;
 
     if (!listingId || typeof listingId !== "string") {
       return NextResponse.json({ error: "Invalid ID" }, { status: 400 });
     }
 
-    // Remove listingId from favoriteIds
-    let favoriteIds = [...(currentUser.favoriteIds || [])];
-    favoriteIds = favoriteIds.filter((id) => id !== listingId);
+    const favoriteIds = [...(currentUser.favoriteIds || [])].filter(
+      (id) => id !== listingId
+    );
 
-    // Update the user in the database
     const user = await prisma.user.update({
       where: {
         id: currentUser.id,
