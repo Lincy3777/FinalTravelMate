@@ -2,14 +2,10 @@ import { NextRequest, NextResponse } from "next/server";
 import getCurrentUser from "@/app/actions/getCurrentUser";
 import prisma from "@/app/libs/prismadb";
 
-interface RouteParams {
-  params: { listingId: string };
-}
-
 export async function POST(
   request: NextRequest,
-  { params }: RouteParams
-): Promise<NextResponse> {
+  { params }: { params: { listingId: string } }
+) {
   try {
     const currentUser = await getCurrentUser();
 
@@ -42,8 +38,8 @@ export async function POST(
 
 export async function DELETE(
   request: NextRequest,
-  { params }: RouteParams
-): Promise<NextResponse> {
+  { params }: { params: { listingId: string } }
+) {
   try {
     const currentUser = await getCurrentUser();
 
