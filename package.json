@@ -58,6 +58,8 @@
     "@types/react-date-range": "^1.4.9",
     "@types/react-dom": "^18",
     "@types/react-world-flags": "^1.6.0",
+    "@typescript-eslint/eslint-plugin": "^8.29.0",
+    "@typescript-eslint/parser": "^8.29.0",
     "autoprefixer": "^10.4.20",
     "eslint": "^8",
     "eslint-config-next": "15.0.2",

@@ -134,10 +134,13 @@ export default function RealTimeSpeechTranslator() {
 
     if (typeof window !== "undefined") {
       const SpeechRecognition =
-        (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+        (window as unknown as { SpeechRecognition?: new () => SpeechRecognition })
+          .SpeechRecognition ||
+        (window as unknown as { webkitSpeechRecognition?: new () => SpeechRecognition })
+          .webkitSpeechRecognition;
 
       if (SpeechRecognition) {
-        recognition = new (SpeechRecognition as new () => SpeechRecognition)();
+        recognition = new SpeechRecognition();
         recognition.continuous = true;
         recognition.interimResults = false;
         recognition.lang = "es-ES"; // Spanish language
