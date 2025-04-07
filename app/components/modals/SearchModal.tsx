@@ -1,3 +1,5 @@
+
+
 "use client";
 
 import useSearchModal from "@/app/hooks/useSearchModal";
@@ -20,6 +22,7 @@ enum STEPS {
   INFO = 2,
 }
 
+// Updated type with stringifiable values
 type QueryParams = {
   locationValue?: string;
   guestCount: number;
@@ -27,7 +30,7 @@ type QueryParams = {
   bathroomCount: number;
   startDate?: string;
   endDate?: string;
-  [key: string]: any;
+  [key: string]: string | number | boolean | null | undefined;
 };
 
 function SearchModal() {
@@ -67,7 +70,7 @@ function SearchModal() {
       return onNext();
     }
 
-    let currentQuery = {};
+    let currentQuery: { [key: string]: any } = {};
 
     if (params) {
       currentQuery = qs.parse(params.toString());

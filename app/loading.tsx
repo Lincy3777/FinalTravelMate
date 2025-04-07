@@ -1,8 +1,6 @@
 import Loader from "./components/Loader";
 
-type Props = {};
-
-function Loading({}: Props) {
+function Loading() {
   return <Loader />;
 }
 
