@@ -1,16 +1,11 @@
-import { NextResponse, NextRequest } from "next/server";
+import { NextResponse } from "next/server";
 import getCurrentUser from "@/app/actions/getCurrentUser";
 import prisma from "@/app/libs/prismadb";
 
-// Define your IParams interface (if you haven't already)
-interface IParams {
-  listingId?: string;
-}
-
-export async function DELETE(
-  request: NextRequest, // Use NextRequest for the request object
-  { params }: { params: IParams } // Destructure params from the second argument
-): Promise<NextResponse> {
+export const POST = async (
+  request: Request,
+  { params }: { params: { listingId: string } }
+) => {
   try {
     const currentUser = await getCurrentUser();
 
@@ -18,7 +13,41 @@ export async function DELETE(
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const { listingId } = params; // Access listingId from the destructured params
+    const { listingId } = params;
+
+    if (!listingId || typeof listingId !== "string") {
+      return NextResponse.json({ error: "Invalid ID" }, { status: 400 });
+    }
+
+    const favoriteIds = [...(currentUser.favoriteIds || []), listingId];
+
+    const user = await prisma.user.update({
+      where: { id: currentUser.id },
+      data: { favoriteIds },
+    });
+
+    return NextResponse.json(user, { status: 200 });
+  } catch (error) {
+    console.error("POST /api/favorites/[listingId] Error:", error);
+    return NextResponse.json(
+      { error: "Internal Server Error" },
+      { status: 500 }
+    );
+  }
+};
+
+export const DELETE = async (
+  request: Request,
+  { params }: { params: { listingId: string } }
+) => {
+  try {
+    const currentUser = await getCurrentUser();
+
+    if (!currentUser) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    const { listingId } = params;
 
     if (!listingId || typeof listingId !== "string") {
       return NextResponse.json({ error: "Invalid ID" }, { status: 400 });
@@ -41,4 +70,4 @@ export async function DELETE(
       { status: 500 }
     );
   }
-}
+};
