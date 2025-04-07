@@ -16,6 +16,7 @@ import {
 import { IoDiamond } from "react-icons/io5";
 import { MdOutlineVilla } from "react-icons/md";
 import { TbBeach, TbMountain, TbPool } from "react-icons/tb";
+
 import Container from "../Container";
 import CategoryBox from "../CategoryBox";
 
@@ -28,7 +29,7 @@ export const categories = [
   {
     label: "Windmills",
     icon: GiWindmill,
-    description: "This property is has windmills!",
+    description: "This property has windmills!",
   },
   {
     label: "Modern",
@@ -43,7 +44,7 @@ export const categories = [
   {
     label: "Pools",
     icon: TbPool,
-    description: "This is property has a beautiful pool!",
+    description: "This property has a beautiful pool!",
   },
   {
     label: "Islands",
@@ -58,7 +59,7 @@ export const categories = [
   {
     label: "Skiing",
     icon: FaSkiing,
-    description: "This property has skiing activies!",
+    description: "This property has skiing activities!",
   },
   {
     label: "Castles",
@@ -78,7 +79,7 @@ export const categories = [
   {
     label: "Arctic",
     icon: BsSnow,
-    description: "This property is in arctic environment!",
+    description: "This property is in an arctic environment!",
   },
   {
     label: "Desert",
@@ -88,7 +89,7 @@ export const categories = [
   {
     label: "Stargazing",
     icon: GiBarn,
-    description: "This property is in a barn where u can stargaze!",
+    description: "This property is in a barn where you can stargaze!",
   },
   {
     label: "Lux",
@@ -97,12 +98,11 @@ export const categories = [
   },
 ];
 
-type Props = {};
-
-function Categories({}: Props) {
+function Categories() {
   const params = useSearchParams();
   const category = params?.get("category");
- //To make sure the categories are only visible on the listing page
+
+  // Show categories only on the listing page
   const pathname = usePathname();
   const isMainPage = pathname === "/listing";
 
@@ -113,12 +113,12 @@ function Categories({}: Props) {
   return (
     <Container>
       <div className="pt-4 flex flex-row items-center justify-between overflow-x-auto">
-        {categories.map((items, index) => (
+        {categories.map((item) => (
           <CategoryBox
-            key={items.label}
-            label={items.label}
-            icon={items.icon}
-            selected={category === items.label}
+            key={item.label}
+            label={item.label}
+            icon={item.icon}
+            selected={category === item.label}
           />
         ))}
       </div>

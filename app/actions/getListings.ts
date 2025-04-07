@@ -1,4 +1,5 @@
 import prisma from "@/app/libs/prismadb";
+import { Prisma } from "@prisma/client";
 
 export interface IListingsParams {
   userId?: string;
@@ -22,9 +23,9 @@ export default async function getListings(params: IListingsParams) {
       startDate,
       endDate,
       category,
-    } = params; // No need for `await` here
+    } = params;
 
-    const query: Record<string, any> = {}; // Replace 'any' if desired with a custom type
+    const query: Prisma.ListingWhereInput = {};
 
     if (userId) {
       query.userId = userId;

@@ -1,32 +1,26 @@
 "use client";
 
-import React, { useCallback, useRef, useState } from "react";
+import React, { useCallback } from "react";
 import Image from "next/image";
 import { TbPhotoPlus } from "react-icons/tb";
-
 
 type Props = {
   onChange: (value: string) => void;
   value: string;
 };
 
-
 function ImageUpload({ onChange, value }: Props) {
-
-
   const handleFileChange = useCallback(
     async (event: React.ChangeEvent<HTMLInputElement>) => {
       const file = event.target.files?.[0];
       if (!file) return;
 
-      const response = await fetch(
-        `/api/file?filename=${file.name}`,
-        {
-            method: 'POST',
-            body: file,
-        },
-    );
-      const newBlob = (await response.json());
+      const response = await fetch(`/api/file?filename=${file.name}`, {
+        method: "POST",
+        body: file,
+      });
+
+      const newBlob = await response.json();
       onChange(newBlob.url);
     },
     [onChange]
@@ -41,12 +35,17 @@ function ImageUpload({ onChange, value }: Props) {
           type="file"
           accept="image/*"
           onChange={handleFileChange}
-          className="hidden" 
+          className="hidden"
         />
       </label>
       {value && (
         <div className="absolute inset-0 w-full h-full">
-          <Image alt="Uploaded" fill style={{ objectFit: "cover" }} src={value} />
+          <Image
+            alt="Uploaded"
+            fill
+            style={{ objectFit: "cover" }}
+            src={value}
+          />
         </div>
       )}
     </div>
@@ -54,4 +53,3 @@ function ImageUpload({ onChange, value }: Props) {
 }
 
 export default ImageUpload;
-

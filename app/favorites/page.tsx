@@ -5,9 +5,7 @@ import getCurrentUser from "../actions/getCurrentUser";
 import getFavoriteListings from "../actions/getFavoriteListings";
 import FavoritesClient from "./FavoritesClient";
 
-type Props = {};
-
-const FavoritePage = async (props: Props) => {
+const FavoritePage = async () => {
   const currentUser = await getCurrentUser();
   const listings = await getFavoriteListings();
 

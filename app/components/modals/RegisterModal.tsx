@@ -1,6 +1,6 @@
 'use client';
+
 import axios from 'axios';
-import { AiFillGithub } from 'react-icons/ai';
 import { FcGoogle } from 'react-icons/fc';
 import { useState, useCallback } from 'react';
 import { FieldValues, SubmitHandler, useForm } from 'react-hook-form';
@@ -15,7 +15,7 @@ import useLoginModal from '@/app/hooks/useLoginModal';
 
 const RegisterModal = () => {
   const registerModal = useRegisterModal();
-  const LoginModal = useLoginModal();
+  const loginModal = useLoginModal();
   const [isLoading, setIsLoading] = useState(false);
 
   const {
@@ -33,21 +33,25 @@ const RegisterModal = () => {
   const onSubmit: SubmitHandler<FieldValues> = async (data) => {
     setIsLoading(true);
     try {
-        const response = await axios.post('/api/register', data);
-        toast.success('Account created successfully!');
-        registerModal.onClose();
-        LoginModal.onOpen();
-    } catch (error: any) {
+      await axios.post('/api/register', data);
+      toast.success('Account created successfully!');
+      registerModal.onClose();
+      loginModal.onOpen();
+    } catch (error: unknown) {
+      if (axios.isAxiosError(error)) {
         toast.error(error.response?.data?.message || 'Registration failed. Please try again.');
+      } else {
+        toast.error('An unexpected error occurred.');
+      }
     } finally {
-        setIsLoading(false);
+      setIsLoading(false);
     }
   };
 
-  const toggle = useCallback(() =>{
+  const toggle = useCallback(() => {
     registerModal.onClose();
-     LoginModal.onOpen();
-    },[LoginModal, registerModal]);
+    loginModal.onOpen();
+  }, [registerModal, loginModal]);
 
   const bodyContent = (
     <div className="flex flex-col gap-4">

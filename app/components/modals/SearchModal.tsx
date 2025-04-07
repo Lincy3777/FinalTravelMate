@@ -20,9 +20,7 @@ enum STEPS {
   INFO = 2,
 }
 
-type Props = {};
-
-function SearchModal({}: Props) {
+function SearchModal() {
   const router = useRouter();
   const params = useSearchParams();
   const searchModel = useSearchModal();
@@ -46,14 +44,13 @@ function SearchModal({}: Props) {
     [location]
   );
 
-    const onBack = useCallback(() => {
-        setStep((value) => value - 1);
-    }, []);
+  const onBack = useCallback(() => {
+    setStep((value) => value - 1);
+  }, []);
 
-    const onNext = useCallback(() => {
-        setStep((value) => value + 1);
-    }, []);
-
+  const onNext = useCallback(() => {
+    setStep((value) => value + 1);
+  }, []);
 
   const onSubmit = useCallback(async () => {
     if (step !== STEPS.INFO) {
@@ -73,7 +70,7 @@ function SearchModal({}: Props) {
       roomCount,
       bathroomCount,
     };
-// converting the date in string format coz they will be sent on the url
+
     if (dateRange.startDate) {
       updatedQuery.startDate = formatISO(dateRange.startDate);
     }
@@ -92,7 +89,6 @@ function SearchModal({}: Props) {
 
     setStep(STEPS.LOCATION);
     searchModel.onClose();
-
     router.push(url);
   }, [
     step,
@@ -108,19 +104,11 @@ function SearchModal({}: Props) {
   ]);
 
   const actionLabel = useMemo(() => {
-    if (step === STEPS.INFO) {
-      return "Search";
-    }
-
-    return "Next";
+    return step === STEPS.INFO ? "Search" : "Next";
   }, [step]);
 
   const secondActionLabel = useMemo(() => {
-    if (step === STEPS.LOCATION) {
-      return undefined;
-    }
-
-    return "Back";
+    return step === STEPS.LOCATION ? undefined : "Back";
   }, [step]);
 
   let bodyContent = (
@@ -158,26 +146,24 @@ function SearchModal({}: Props) {
       <div className="flex flex-col gap-8">
         <Heading title="More information" subtitle="Find your perfect place!" />
         <Counter
-          onChange={(value) => setGuestCount(value)}
+          onChange={setGuestCount}
           value={guestCount}
           title="Guests"
           subtitle="How many guests are coming?"
         />
         <hr />
         <Counter
-          onChange={(value) => setRoomCount(value)}
+          onChange={setRoomCount}
           value={roomCount}
           title="Rooms"
           subtitle="How many rooms do you need?"
         />
         <hr />
         <Counter
-          onChange={(value) => {
-            setBathroomCount(value);
-          }}
+          onChange={setBathroomCount}
           value={bathroomCount}
           title="Bathrooms"
-          subtitle="How many bahtrooms do you need?"
+          subtitle="How many bathrooms do you need?"
         />
       </div>
     );

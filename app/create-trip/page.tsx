@@ -4,12 +4,12 @@ import React, { useEffect, useState } from "react";
 import { Input } from "@/components/ui/input";
 import { AI_PROMPT, SelectBudgetOptions, SelectTravelList } from "../constants/options";
 import { toast } from "react-toastify";
-import { chatSession } from "../service/AIModal";
+import { sendTravelPrompt } from "../service/AIModal"; // ✅ updated import
 import { useRouter } from "next/navigation";
-import { useForm, SubmitHandler } from 'react-hook-form';
-import dynamic from 'next/dynamic';
+import { useForm, SubmitHandler } from "react-hook-form";
+import dynamic from "next/dynamic";
 
-const Map = dynamic(() => import('../components/Map'), {
+const Map = dynamic(() => import("../components/Map"), {
   ssr: false,
 });
 
@@ -37,7 +37,6 @@ const CreateTrip: React.FC = () => {
   const traveler = watch("traveler");
 
   useEffect(() => {
-    // Handle geocoding
     const handleGeocode = async (address: string) => {
       const encodedAddress = encodeURIComponent(address);
 
@@ -50,8 +49,6 @@ const CreateTrip: React.FC = () => {
           const data = await response.json();
           if (data.length > 0) {
             const { lat, lon } = data[0];
-            console.log(`Latitude: ${lat}, Longitude: ${lon}`);
-
             setMapCenter([lat, lon]);
             setLocationValue(address);
           } else {
@@ -64,7 +61,6 @@ const CreateTrip: React.FC = () => {
       }
     };
 
-    // Call handleGeocode when location changes
     const location = watch("location");
     if (location) {
       handleGeocode(location);
@@ -73,12 +69,15 @@ const CreateTrip: React.FC = () => {
 
   const onSubmit: SubmitHandler<FormData> = async (data) => {
     try {
-      const FINAL_PROMPT = AI_PROMPT(data.location, data.totalDays.toString(), data.traveler, data.budget);
+      const FINAL_PROMPT = AI_PROMPT(
+        data.location,
+        data.totalDays.toString(),
+        data.traveler,
+        data.budget
+      );
 
-      const result = await chatSession.sendMessage(FINAL_PROMPT);
-      const aiResponse = JSON.parse(result.response.text);
-
-      console.log("AI Response:", aiResponse);
+      const responseText = await sendTravelPrompt(FINAL_PROMPT); // ✅ fresh request
+      const aiResponse = JSON.parse(responseText);
 
       const itineraryData = {
         ...aiResponse,
@@ -88,13 +87,11 @@ const CreateTrip: React.FC = () => {
         people: Number(data.traveler),
       };
 
-      console.log("Itinerary Data to View:", itineraryData);
-
       const encodedItinerary = encodeURIComponent(JSON.stringify(itineraryData));
       router.push(`/view-trip?itinerary=${encodedItinerary}`);
     } catch (error) {
       console.error("Error generating trip:", error);
-      toast.error(error instanceof Error ? error.message : 'Failed to generate trip.');
+      toast.error(error instanceof Error ? error.message : "Failed to generate trip.");
     }
   };
 
@@ -119,7 +116,9 @@ const CreateTrip: React.FC = () => {
 
         {/* Total Days Input */}
         <div>
-          <label className="text-xl font-medium">How many days are you planning your trip?</label>
+          <label className="text-xl font-medium">
+            How many days are you planning your trip?
+          </label>
           <Input
             id="totalDays"
             type="number"
@@ -167,7 +166,10 @@ const CreateTrip: React.FC = () => {
           </div>
         </div>
 
-        <button type="submit" className="px-4 py-2 rounded-lg font-semibold text-white bg-blue-500 hover:bg-blue-600">
+        <button
+          type="submit"
+          className="px-4 py-2 rounded-lg font-semibold text-white bg-blue-500 hover:bg-blue-600"
+        >
           Generate Trip
         </button>
       </form>

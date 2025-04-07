@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useState } from 'react';
@@ -51,8 +50,23 @@ const Chatbot = () => {
   return (
     <Box sx={{ position: 'fixed', bottom: 20, right: 20, zIndex: 1000 }}>
       <Slide direction="up" in={open} mountOnEnter unmountOnExit>
-        <Paper elevation={4} sx={{ width: 300, maxHeight: 400, display: 'flex', flexDirection: 'column', backgroundColor: '#f0f0f0' }}>
-          <Box sx={{ p: 1, display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid #ccc' }}>
+        <Paper
+          elevation={4}
+          sx={{
+            width: 300,
+            maxHeight: 400,
+            display: 'flex',
+            flexDirection: 'column',
+            backgroundColor: '#f0f0f0'
+          }}
+        >
+          <Box sx={{
+            p: 1,
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            borderBottom: '1px solid #ccc'
+          }}>
             <strong style={{ fontSize: '18px', color: '#333' }}>Travel Assistant</strong>
             <IconButton onClick={handleToggle} size="small">
               <CloseIcon />
@@ -60,19 +74,26 @@ const Chatbot = () => {
           </Box>
           <Box sx={{ p: 1, flexGrow: 1, overflowY: 'auto', padding: '10px' }}>
             {messages.map((message, index) => (
-              <div key={index} style={{
-                marginBottom: '8px',
-                wordBreak: 'break-word',
-                fontSize: '14px',
-                fontFamily: 'Arial, sans-serif',
-                padding: '5px',
-                borderRadius: '5px',
-                backgroundColor: index % 2 === 0 ? '#fff' : '#ddd'
-              }}>{message.includes('Assistant:') ? (
-                <ReactMarkdown children={message.replace('Assistant: ', '')} />
-              ) : (
-                message
-              )}</div>
+              <div
+                key={index}
+                style={{
+                  marginBottom: '8px',
+                  wordBreak: 'break-word',
+                  fontSize: '14px',
+                  fontFamily: 'Arial, sans-serif',
+                  padding: '5px',
+                  borderRadius: '5px',
+                  backgroundColor: index % 2 === 0 ? '#fff' : '#ddd'
+                }}
+              >
+                {message.includes('Assistant:') ? (
+                  <ReactMarkdown>
+                    {message.replace('Assistant: ', '')}
+                  </ReactMarkdown>
+                ) : (
+                  message
+                )}
+              </div>
             ))}
           </Box>
           <Box sx={{ p: 1, display: 'flex', alignItems: 'center' }}>
@@ -82,11 +103,16 @@ const Chatbot = () => {
               placeholder="Ask about travel plans or destinations..."
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              onKeyUp={(e) => { if (e.key === 'Enter') { handleSendMessage(); } }}
+              onKeyUp={(e) => { if (e.key === 'Enter') handleSendMessage(); }}
               autoComplete="off"
               sx={{ borderRadius: '5px', padding: '5px' }}
             />
-            <IconButton onClick={handleSendMessage} aria-label="send" size="large" sx={{ marginLeft: '5px' }}>
+            <IconButton
+              onClick={handleSendMessage}
+              aria-label="send"
+              size="large"
+              sx={{ marginLeft: '5px' }}
+            >
               <SendIcon />
             </IconButton>
           </Box>

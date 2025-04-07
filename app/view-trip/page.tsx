@@ -1,8 +1,9 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { toast } from "react-toastify";
+import Image from "next/image";
 
 interface ItineraryData {
   activities: string;
@@ -48,63 +49,46 @@ const ViewTrip: React.FC = () => {
   const [hasRendered, setHasRendered] = useState(false);
 
   useEffect(() => {
-    console.log("itineraryEncoded:", itineraryEncoded);
-
     if (itineraryEncoded) {
       try {
         const decodedItinerary = decodeURIComponent(itineraryEncoded);
-        console.log("Decoded itinerary:", decodedItinerary);
-
         const parsedItinerary: ItineraryData = JSON.parse(decodedItinerary);
-        // console.log("Parsed itinerary:", parsedItinerary);
-
         setItinerary(parsedItinerary);
-      } catch (error) {
-        // console.error("Error parsing itinerary:", error);
+      } catch {
         toast.error("Failed to load itinerary.");
       }
     }
     setHasRendered(true);
   }, [itineraryEncoded, router]);
 
-  const fetchImage = async (searchTerm: string, key: string) => {
-    // console.log(`Fetching image for: ${searchTerm}`);
-
+  const fetchImage = useCallback(async (searchTerm: string, key: string) => {
     try {
       const response = await fetch(`/api/unsplash?searchTerm=${encodeURIComponent(searchTerm)}`, {
         headers: {
-          'Cache-Control': 'no-cache, no-store, must-revalidate',
-          'Pragma': 'no-cache',
-          'Expires': '0',
+          "Cache-Control": "no-cache, no-store, must-revalidate",
+          Pragma: "no-cache",
+          Expires: "0",
         },
       });
 
       if (response.ok) {
         const data = await response.json();
-        console.log(`Image data for ${searchTerm}:`, data);
-
         if (data.results && data.results.length > 0) {
-          setImageUrls((prevImageUrls) => {
-            console.log("Setting imageUrls for", key, data.results[0].urls.regular);
-            return {
-              ...prevImageUrls,
-              [key]: data.results[0].urls.regular,
-            };
-          });
-          console.log("imageUrls state:", imageUrls);
+          setImageUrls((prev) => ({
+            ...prev,
+            [key]: data.results[0].urls.regular,
+          }));
         }
       } else {
         console.error(`Failed to fetch image for ${searchTerm}: ${response.status}`);
       }
-    } catch (error) {
-      console.error("Error fetching image:", error);
+    } catch (err) {
+      console.error("Error fetching image:", err);
     }
-  };
+  }, []);
 
   useEffect(() => {
     if (itinerary) {
-      // console.log("Itinerary data available, fetching images...");
-
       itinerary.restaurants?.forEach((restaurant) => {
         if (!imageUrls[restaurant.name]) {
           fetchImage(restaurant.name, restaurant.name);
@@ -117,14 +101,11 @@ const ViewTrip: React.FC = () => {
         }
       });
     }
-  }, [itinerary, imageUrls]);
+  }, [itinerary, fetchImage]);
 
   if (!itinerary || !hasRendered) {
-    console.log("Loading itinerary...");
     return <div className="p-4">Loading itinerary...</div>;
   }
-
-  console.log("Rendering itinerary:", itinerary);
 
   return (
     <div className="px-5 mt-12 sm:px-10 md:px-32 lg:px-56 xl:px-72">
@@ -146,9 +127,11 @@ const ViewTrip: React.FC = () => {
           <div className="mt-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {itinerary.restaurants.map((restaurant, index) => (
               <div key={index} className="border rounded-lg p-4">
-                <img
+                <Image
                   src={imageUrls[restaurant.name] || "/images/Restaurant-placeholder.jpg"}
                   alt={restaurant.name}
+                  width={500}
+                  height={300}
                   className="w-full h-48 object-cover rounded-md mb-2"
                 />
                 <h4 className="font-semibold text-lg">{restaurant.name}</h4>
@@ -167,9 +150,11 @@ const ViewTrip: React.FC = () => {
           <div className="mt-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {itinerary.places.map((place, index) => (
               <div key={index} className="border rounded-lg p-4">
-                <img
+                <Image
                   src={imageUrls[place.name] || "/images/travel.jpg"}
                   alt={place.name}
+                  width={500}
+                  height={300}
                   className="w-full h-48 object-cover rounded-md mb-2"
                 />
                 <h4 className="font-semibold text-lg">{place.name}</h4>
@@ -187,5 +172,3 @@ const ViewTrip: React.FC = () => {
 };
 
 export default ViewTrip;
-
-

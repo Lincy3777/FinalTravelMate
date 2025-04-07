@@ -5,9 +5,7 @@ import getCurrentUser from "../actions/getCurrentUser";
 import getReservation from "../actions/getReservations";
 import TripsClient from "./TripsClient";
 
-type Props = {};
-
-const TripsPage = async (props: Props) => {
+const TripsPage = async () => {
   const currentUser = await getCurrentUser();
 
   if (!currentUser) {
@@ -22,12 +20,12 @@ const TripsPage = async (props: Props) => {
     userId: currentUser.id,
   });
 
-  if (reservations.length === 0) { //if no reservation is made by current user
+  if (reservations.length === 0) {
     return (
       <ClientOnly>
         <EmptyState
           title="No trips found"
-          subtitle="Looks like you havent reserved any trips."
+          subtitle="Looks like you haven’t reserved any trips."
         />
       </ClientOnly>
     );

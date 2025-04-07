@@ -15,11 +15,8 @@ import ImageUpload from "../inputs/ImageUpload";
 import Input from "../inputs/Input";
 import { categories } from "../navbar/Categories";
 import Modal from "./modal";
-import AvatarUploadPage from "../inputs/ImageUpload";
 
-type Props = {};
-
-enum STEPS { // 6 objects
+enum STEPS {
   CATEGORY = 0,
   LOCATION = 1,
   INFO = 2,
@@ -28,10 +25,11 @@ enum STEPS { // 6 objects
   PRICE = 5,
 }
 
-function RentModal({}: Props) {
+function RentModal() {
   const router = useRouter();
   const rentModel = useRentModal();
-  const [step, setStep] = useState(STEPS.CATEGORY); //default it starts from 0
+
+  const [step, setStep] = useState(STEPS.CATEGORY);
   const [isLoading, setIsLoading] = useState(false);
 
   const {
@@ -79,7 +77,6 @@ function RentModal({}: Props) {
     console.log(`Field Updated: ${id} -> ${value}`);
   };
 
-  //Stepping 1 step back
   const onBack = () => {
     setStep((value) => value - 1);
   };
@@ -113,26 +110,19 @@ function RentModal({}: Props) {
   };
 
   const actionLabel = useMemo(() => {
-    if (step === STEPS.PRICE) {
-      return "Create"; //If on last step user can create, else complete the steps
-    }
-
-    return "Next";
+    return step === STEPS.PRICE ? "Create" : "Next";
   }, [step]);
 
   const secondActionLabel = useMemo(() => {
-    if (step === STEPS.CATEGORY) {
-      return undefined;
-    }//If on the 1st step there is no going back
-    return "Back";
+    return step === STEPS.CATEGORY ? undefined : "Back";
   }, [step]);
 
-  //let: since the variable should be changeable 
   let bodyContent = (
     <div className="flex flex-col gap-8">
       <Heading
         title="Which of these best describes your place?"
-        subtitle="Pick a category" />
+        subtitle="Pick a category"
+      />
       <div className="grid grid-cols-1 md:grid-cols-2 gap-3 max-h-[50vh] overflow-y-auto scrollbar-thin scrollbar-thumb-[#FF5A5F]">
         {categories.map((item, index) => (
           <div key={index} className="col-span-1">
@@ -157,7 +147,8 @@ function RentModal({}: Props) {
         />
         <CountrySelect
           value={location}
-          onChange={(value) => setCustomValue("location", value)}/>
+          onChange={(value) => setCustomValue("location", value)}
+        />
         <Map center={location?.latlng} />
       </div>
     );
@@ -168,10 +159,11 @@ function RentModal({}: Props) {
       <div className="flex flex-col gap-8">
         <Heading
           title="About your place"
-          subtitle="What amenitites do you have ?" />
+          subtitle="What amenities do you have?"
+        />
         <Counter
           title="Guests"
-          subtitle="How many guest do you allow?"
+          subtitle="How many guests do you allow?"
           value={guestCount}
           onChange={(value) => setCustomValue("guestCount", value)}
         />
@@ -185,7 +177,7 @@ function RentModal({}: Props) {
         <hr />
         <Counter
           title="Bathrooms"
-          subtitle="How many Bathrooms do you have?"
+          subtitle="How many bathrooms do you have?"
           value={bathroomCount}
           onChange={(value) => setCustomValue("bathroomCount", value)}
         />
@@ -203,8 +195,8 @@ function RentModal({}: Props) {
         <ImageUpload
           value={imageSrc}
           onChange={(value) => setCustomValue("imageSrc", value)}
-        /> 
-       </div>
+        />
+      </div>
     );
   }
 
@@ -213,7 +205,7 @@ function RentModal({}: Props) {
       <div className="flex flex-col gap-8">
         <Heading
           title="Tell people about your place"
-          subtitle="Describe your place "
+          subtitle="Describe your place"
         />
         <Input
           id="title"
@@ -236,7 +228,7 @@ function RentModal({}: Props) {
     );
   }
 
-  if (step == STEPS.PRICE) {
+  if (step === STEPS.PRICE) {
     bodyContent = (
       <div className="flex flex-col gap-8">
         <Heading
@@ -261,12 +253,11 @@ function RentModal({}: Props) {
     <Modal
       disabled={isLoading}
       isOpen={rentModel.isOpen}
-      title=" Your unique stay!"
+      title="Your unique stay!"
       actionLabel={actionLabel}
       onSubmit={handleSubmit(onSubmit)}
       secondaryActionLabel={secondActionLabel}
       secondaryAction={step === STEPS.CATEGORY ? undefined : onBack}
-     //if we are on the 1st step we dont hv anything to offer thus undeined else back from current step
       onClose={rentModel.onClose}
       body={bodyContent}
     />

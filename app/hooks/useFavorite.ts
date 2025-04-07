@@ -1,10 +1,10 @@
 import { safeUser } from "../types";
 import axios from "axios";
 import { useRouter } from "next/navigation";
-import { useCallback, useMemo } from "react";
+import { useCallback, useMemo, MouseEvent } from "react";
 import { toast } from "react-toastify";
 import useLoginModal from "./useLoginModal";
-///////////////////////////////////
+
 type Props = {
   listingId: string;
   currentUser?: safeUser | null;
@@ -12,39 +12,35 @@ type Props = {
 
 function useFavorite({ listingId, currentUser }: Props) {
   const router = useRouter();
-  const loginModel = useLoginModal();
+  const loginModal = useLoginModal();
 
   const hasFavorite = useMemo(() => {
     const list = currentUser?.favoriteIds || [];
-
     return list.includes(listingId);
   }, [currentUser, listingId]);
 
   const toggleFavorite = useCallback(
-    async (e: React.MouseEvent<HTMLDivElement>) => {
+    async (e: MouseEvent<HTMLDivElement>) => {
       e.stopPropagation();
 
       if (!currentUser) {
-        return loginModel.onOpen();
+        return loginModal.onOpen();
       }
 
       try {
-        let request;
-
         if (hasFavorite) {
-          request = () => axios.delete(`/api/favorites/${listingId}`);
+          await axios.delete(`/api/favorites/${listingId}`);
         } else {
-          request = () => axios.post(`/api/favorites/${listingId}`);
+          await axios.post(`/api/favorites/${listingId}`);
         }
 
-        await request();
         router.refresh();
         toast.success("Success");
-      } catch (error: any) {
-        toast.error("Something Went Wrong");
+      } catch {
+        toast.error("Something went wrong");
       }
     },
-    [currentUser, hasFavorite, listingId, loginModel,router]
+    [currentUser, hasFavorite, listingId, loginModal, router]
   );
 
   return {

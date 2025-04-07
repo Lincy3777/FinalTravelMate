@@ -1,5 +1,6 @@
 // app/components/Footer.tsx
-import { Facebook, Twitter, Instagram, Linkedin } from 'lucide-react';
+import { Facebook, Twitter, Instagram, Linkedin } from "lucide-react";
+import Link from "next/link";
 
 const Footer = () => {
   return (
@@ -17,10 +18,10 @@ const Footer = () => {
         <div>
           <h3 className="text-md font-medium text-gray-900 mb-2">Links</h3>
           <ul className="space-y-1 text-sm">
-            <li><a href="/" className="hover:text-black">Home</a></li>
-            <li><a href="/" className="hover:text-black">About</a></li>
-            <li><a href="/listing" className="hover:text-black">Features</a></li>
-            <li><a href="/" className="hover:text-black">Contact</a></li>
+            <li><Link href="/" className="hover:text-black">Home</Link></li>
+            <li><Link href="/" className="hover:text-black">About</Link></li>
+            <li><Link href="/listing" className="hover:text-black">Features</Link></li>
+            <li><Link href="/" className="hover:text-black">Contact</Link></li>
           </ul>
         </div>
 
@@ -31,7 +32,15 @@ const Footer = () => {
             <a href="#" aria-label="Facebook" className="hover:text-black"><Facebook size={20} /></a>
             <a href="#" aria-label="Twitter" className="hover:text-black"><Twitter size={20} /></a>
             <a href="#" aria-label="Instagram" className="hover:text-black"><Instagram size={20} /></a>
-            <a href="https://www.linkedin.com/in/lincy-thomas-518660252?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app" aria-label="LinkedIn" className="hover:text-black"><Linkedin size={20} /></a>
+            <a
+              href="https://www.linkedin.com/in/lincy-thomas-518660252?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="LinkedIn"
+              className="hover:text-black"
+            >
+              <Linkedin size={20} />
+            </a>
           </div>
         </div>
       </div>

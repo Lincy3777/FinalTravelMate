@@ -1,6 +1,6 @@
 'use client';
-import  { signIn } from 'next-auth/react';
-import axios from 'axios';
+
+import { signIn } from 'next-auth/react';
 import { FcGoogle } from 'react-icons/fc';
 import { useState, useCallback } from 'react';
 import { FieldValues, SubmitHandler, useForm } from 'react-hook-form';
@@ -33,28 +33,28 @@ const LoginModal = () => {
   const onSubmit: SubmitHandler<FieldValues> = async (data) => {
     setIsLoading(true);
 
-    signIn('credentials',{
-      ...data, redirect: false
-    })
-    .then((callback) => {
-      console.log(callback);
+    signIn('credentials', {
+      ...data,
+      redirect: false,
+    }).then((callback) => {
       setIsLoading(false);
 
-      if(callback?.ok){
+      if (callback?.ok) {
         toast.success('Logged in');
         router.refresh();
         LoginModal.onClose();
       }
-      if(callback?.error) {
+
+      if (callback?.error) {
         toast.error(callback.error);
       }
     });
-  }
+  };
 
-  const toggle = useCallback(() =>{
+  const toggle = useCallback(() => {
     LoginModal.onClose();
     registerModal.onOpen();
-  },[LoginModal, registerModal]);
+  }, [LoginModal, registerModal]);
 
   const bodyContent = (
     <div className="flex flex-col gap-4">
@@ -98,14 +98,14 @@ const LoginModal = () => {
         outline
         label="Continue with Google"
         icon={FcGoogle}
-        onClick={ async (e) => {
+        onClick={async (e) => {
           e.preventDefault();
-          await signIn("google", {callbackUrl: "/"})
-      }}
+          await signIn('google', { callbackUrl: '/' });
+        }}
       />
       <div className="text-neutral-500 text-center mt-4 font-light">
         <div className="justify-center flex flex-row items-center gap-2">
-          <div>Don't have an account?</div>
+          <div>Don&apos;t have an account?</div>
           <div
             onClick={toggle}
             className="text-neutral-800 cursor-pointer hover:underline"
