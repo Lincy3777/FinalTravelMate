@@ -2,15 +2,9 @@ import { NextRequest, NextResponse } from "next/server";
 import getCurrentUser from "@/app/actions/getCurrentUser";
 import prisma from "@/app/libs/prismadb";
 
-interface Params {
-  params: {
-    listingId: string;
-  };
-}
-
 export async function POST(
   request: NextRequest,
-  { params }: Params
+  context: { params: { listingId: string } }
 ) {
   try {
     const currentUser = await getCurrentUser();
@@ -19,7 +13,7 @@ export async function POST(
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const { listingId } = params;
+    const { listingId } = context.params;
 
     if (!listingId || typeof listingId !== "string") {
       return NextResponse.json({ error: "Invalid ID" }, { status: 400 });
@@ -35,13 +29,16 @@ export async function POST(
     return NextResponse.json(user);
   } catch (error) {
     console.error("POST /api/favorites/[listingId] Error:", error);
-    return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Internal Server Error" },
+      { status: 500 }
+    );
   }
 }
 
 export async function DELETE(
   request: NextRequest,
-  { params }: Params
+  context: { params: { listingId: string } }
 ) {
   try {
     const currentUser = await getCurrentUser();
@@ -50,7 +47,7 @@ export async function DELETE(
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const { listingId } = params;
+    const { listingId } = context.params;
 
     if (!listingId || typeof listingId !== "string") {
       return NextResponse.json({ error: "Invalid ID" }, { status: 400 });
@@ -68,6 +65,9 @@ export async function DELETE(
     return NextResponse.json(user);
   } catch (error) {
     console.error("DELETE /api/favorites/[listingId] Error:", error);
-    return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Internal Server Error" },
+      { status: 500 }
+    );
   }
 }
