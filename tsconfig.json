@@ -58,7 +58,7 @@
     "next-env.d.ts",
     "**/*.ts",
     "**/*.tsx",
-    ".next/types/**/*.ts"  // Added this line
+    // ".next/types/**/*.ts"  // Removed this line to avoid referencing non-existent files
   ],
   "exclude": ["node_modules"]
 }

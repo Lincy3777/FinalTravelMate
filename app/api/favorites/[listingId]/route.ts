@@ -1,12 +1,11 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import getCurrentUser from "@/app/actions/getCurrentUser";
 import prisma from "@/app/libs/prismadb";
 
-interface Context {
-  params: { listingId: string };
-}
-
-export async function POST(request: Request, context: Context) {
+export async function POST(
+  request: NextRequest,
+  { params }: { params: { listingId: string } }
+): Promise<NextResponse> {
   try {
     const currentUser = await getCurrentUser();
 
@@ -14,7 +13,7 @@ export async function POST(request: Request, context: Context) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const { listingId } = context.params;
+    const { listingId } = params;
 
     if (!listingId || typeof listingId !== "string") {
       return NextResponse.json({ error: "Invalid ID" }, { status: 400 });
@@ -37,7 +36,10 @@ export async function POST(request: Request, context: Context) {
   }
 }
 
-export async function DELETE(request: Request, context: Context) {
+export async function DELETE(
+  request: NextRequest,
+  { params }: { params: { listingId: string } }
+): Promise<NextResponse> {
   try {
     const currentUser = await getCurrentUser();
 
@@ -45,7 +47,7 @@ export async function DELETE(request: Request, context: Context) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const { listingId } = context.params;
+    const { listingId } = params;
 
     if (!listingId || typeof listingId !== "string") {
       return NextResponse.json({ error: "Invalid ID" }, { status: 400 });
