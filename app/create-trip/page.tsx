@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import { Input } from "@/components/ui/input";
 import { AI_PROMPT, SelectBudgetOptions, SelectTravelList } from "../constants/options";
 import { toast } from "react-toastify";
-import { sendTravelPrompt } from "../service/AIModal"; // ✅ updated import
+import { sendTravelPrompt } from "../service/AIModal";
 import { useRouter } from "next/navigation";
 import { useForm, SubmitHandler } from "react-hook-form";
 import dynamic from "next/dynamic";
@@ -28,11 +28,11 @@ const CreateTrip: React.FC = () => {
   const {
     register,
     handleSubmit,
-    formState: { errors },
     setValue,
     watch,
   } = useForm<FormData>();
 
+  const location = watch("location");
   const budget = watch("budget");
   const traveler = watch("traveler");
 
@@ -61,11 +61,10 @@ const CreateTrip: React.FC = () => {
       }
     };
 
-    const location = watch("location");
     if (location) {
       handleGeocode(location);
     }
-  }, [watch("location")]);
+  }, [location]);
 
   const onSubmit: SubmitHandler<FormData> = async (data) => {
     try {
@@ -76,7 +75,7 @@ const CreateTrip: React.FC = () => {
         data.budget
       );
 
-      const responseText = await sendTravelPrompt(FINAL_PROMPT); // ✅ fresh request
+      const responseText = await sendTravelPrompt(FINAL_PROMPT);
       const aiResponse = JSON.parse(responseText);
 
       const itineraryData = {

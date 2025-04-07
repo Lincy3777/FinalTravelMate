@@ -65,16 +65,19 @@ function RentModal() {
       dynamic(() => import("../Map"), {
         ssr: false,
       }),
-    [location]
+    [] // Removed location dependency
   );
 
-  const setCustomValue = (id: string, value: any) => {
+  const setCustomValue = (
+    id: string,
+    value: string | number | object | null
+  ) => {
     setValue(id, value, {
       shouldValidate: true,
       shouldDirty: true,
       shouldTouch: true,
     });
-    console.log(`Field Updated: ${id} -> ${value}`);
+    console.log(`Field Updated: ${id} ->`, value);
   };
 
   const onBack = () => {

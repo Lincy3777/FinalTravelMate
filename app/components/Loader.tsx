@@ -3,7 +3,7 @@
 import { motion } from "framer-motion";
 import React from "react";
 
-function Loader() {
+const Loader: React.FC = (): JSX.Element => {
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -15,7 +15,7 @@ function Loader() {
         <div className="rounded relative bg-white py-12">
           <div className="rounded-full bg-indigo-100 w-[177px] h-[177px] relative flex justify-center items-center mx-auto animate-spin">
             <svg
-              className="absolute top-0 0 left-0"
+              className="absolute top-0 left-0"
               width={177}
               height={177}
               viewBox="0 0 177 177"
@@ -27,7 +27,7 @@ function Loader() {
                 fill="#808080"
               />
             </svg>
-            <div className="div rounded-full bg-white w-[150px] h-[150px]" />
+            <div className="rounded-full bg-white w-[150px] h-[150px]" />
           </div>
           <p className="mt-6 font-medium text-gray-800 text-center animate-bounce text-xl">
             Loading ...
@@ -36,6 +36,6 @@ function Loader() {
       </div>
     </motion.div>
   );
-}
+};
 
 export default Loader;
