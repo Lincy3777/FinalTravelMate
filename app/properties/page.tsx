@@ -5,9 +5,7 @@ import getCurrentUser from "../actions/getCurrentUser";
 import PropertiesClient from "./PropertiesClient";
 import getListings from "../actions/getListings";
 
-type Props = {};
-
-const PropertiesPage = async (props: Props) => {
+const PropertiesPage = async () => {
   const currentUser = await getCurrentUser();
 
   if (!currentUser) {
@@ -22,7 +20,7 @@ const PropertiesPage = async (props: Props) => {
     userId: currentUser.id,
   });
 
-  if (listings.length === 0) { //if no listings is made by current user
+  if (listings.length === 0) {
     return (
       <ClientOnly>
         <EmptyState

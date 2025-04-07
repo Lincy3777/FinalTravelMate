@@ -5,9 +5,7 @@ import getCurrentUser from "../actions/getCurrentUser";
 import getReservation from "../actions/getReservations";
 import ReservationsClient from "./ReservationsClient";
 
-type Props = {};
-
-const ReservationsPage = async (props: Props) => {
+const ReservationsPage = async () => {
   const currentUser = await getCurrentUser();
 
   if (!currentUser) {
@@ -18,7 +16,7 @@ const ReservationsPage = async (props: Props) => {
     );
   }
 
-//   Fetching reservations made by users on our listing
+  // Fetching reservations made by users on our listing
   const reservations = await getReservation({
     authorId: currentUser.id,
   });
