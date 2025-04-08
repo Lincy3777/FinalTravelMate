@@ -10,6 +10,8 @@ interface HomeProps {
   searchParams: IListingsParams;
 }
 
+export const dynamic = "force-dynamic"; // Force dynamic rendering
+
 const Home = async ({ searchParams }: HomeProps) => {
   const listings: safeListing[] = await getListings(searchParams);
   const currentUser: safeUser | null = (await getCurrentUser()) ?? null;
