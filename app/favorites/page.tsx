@@ -5,6 +5,9 @@ import getCurrentUser from "../actions/getCurrentUser";
 import getFavoriteListings from "../actions/getFavoriteListings";
 import FavoritesClient from "./FavoritesClient";
 
+// Force dynamic rendering
+export const dynamic = "force-dynamic";
+
 const FavoritePage = async () => {
   const currentUser = await getCurrentUser();
   const listings = await getFavoriteListings();
